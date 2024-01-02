@@ -44,9 +44,9 @@ app.post('/senha_adm', async (req, res) => {
     if (dadosDoCorpo.senha == senhaAdm) {
         const caminhoArquivo = path.join(__dirname, 'public', 'admin_dashboard.html')
         const conteudoArquivo = await fs.readFile(caminhoArquivo, 'utf-8');
-        res.status(200).json({acerto:true, arquivo:conteudoArquivo})
+        res.status(200).json({acerto:true, arquivo:conteudoArquivo, senha:senhaAdm})
     } else {
-        res.status(200).json({acerto:false, arquivo:'nada seu merda'});
+        res.status(200).json({acerto:false, arquivo:'nada seu merda', senha:'nada seu merda'});
     }
   } catch (erro) {
     console.error('Erro ao processar a solicitação:', erro);
