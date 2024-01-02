@@ -7,12 +7,17 @@ const senhaAdm = process.env.SENHA_ADM
 const express = require('express');
 const app = express();
 const porta = 1313;
+const path = require('path');
+const fs = require('fs').promises;
 
 // Middleware para analisar corpos JSON
 app.use(express.json());
 
 // Middleware para analisar dados de formulário URL-encoded
 app.use(express.urlencoded({ extended: true }));
+
+// Define o diretório onde os arquivos estáticos (como HTML) estão localizados
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Configurando CORS
 app.use((req, res , next) => {
@@ -30,16 +35,18 @@ app.use((req, res , next) => {
 })
 
 // Recebendo requisição de POST para ver se senha está correta
-app.post('/senha_adm', (req, res) => {
+app.post('/senha_adm', async (req, res) => {
   try {
     if (!req.body) {
       return res.status(400).json({ erro: 'Corpo da solicitação vazio' });
     }
     const dadosDoCorpo = req.body;
     if (dadosDoCorpo.senha == senhaAdm) {
-        res.status(200).json({acerto:true});
+        const caminhoArquivo = path.join(__dirname, 'public', 'admin_dashboard.html')
+        const conteudoArquivo = await fs.readFile(caminhoArquivo, 'utf-8');
+        res.status(200).json({acerto:true, arquivo:conteudoArquivo})
     } else {
-        res.status(200).json({acerto:false});
+        res.status(200).json({acerto:false, arquivo:'nada seu merda'});
     }
   } catch (erro) {
     console.error('Erro ao processar a solicitação:', erro);
