@@ -58,3 +58,4 @@ app.post('/senha_adm', async (req, res) => {
 app.listen(porta, () => {
   console.log(`Servidor rodando na porta ${porta}`);
 });
+//oioioi
