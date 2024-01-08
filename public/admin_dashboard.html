@@ -39,8 +39,28 @@
                 <div class="card-obra-detals" id="-qualquer">
                     <div class="fundo-detals" onclick="desaparecerDetals('-qualquer')"></div>
                     <div class="card-detals obra-qualquer">
-                        <h5>Adicionar "Breaking Bad"</h5>
-                        <hr>
+                        <img style="border: 0; height: 185px; object-fit: cover;" src="" alt="">
+                        <h5 style="margin-top: 13px;"></h5>
+                        <hr style="margin: 10px 13px; background-color: var(--taupe-gray); border: 1px solid var(--taupe-gray); width: auto; opacity: 1; transform: translateY(0);">
+                        <h5 style="font-size: 18px;margin-top: 20px;">Avaliar</h5>
+                        <div style="margin-left: 13px; margin-top: 5px;" id="todas-estrelas">
+                            <div id="estrelas">
+                            </div>
+                            <div id="background-estrelas">
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                            </div>
+                        </div>
+                        <input style="margin-left: 13px; margin-top: 3px; background-color: hsla(0, 0%, 0%, 0.500); color: var(--white-smoke); border: 0; padding: 8px; border-radius: 5px;" min="0" max="5" type="number" step="0.5" onkeydown="return false" value="0" onchange="mudarStar(this.value)">
+                        <h5 style="font-size: 18px;margin-top: 20px;">Comentar algo</h5>
+                        <input id="input-comentario" type="text">
+                        <div id="botoes">
+                            <input class="btn" type="button" value="Adicionar">
+                            <input onclick="desaparecerDetals('-qualquer');document.querySelector('#-qualquer > div.card-detals.obra-qualquer > input[type=number]:nth-child(6)').value = 0;document.querySelector('#input-comentario').value = '';mudarStar(0)" class="btn" type="button" value="Cancelar">
+                        </div>
                     </div>
                 </div> 
             </div>
