@@ -37,7 +37,7 @@
                 <div id="resultado-pesquisa"> 
                 </div>
                 <div class="card-obra-detals" id="-qualquer">
-                    <div class="fundo-detals" onclick="desaparecerDetals('-qualquer')"></div>
+                    <div class="fundo-detals" onclick="desaparecerDetals('-qualquer');document.querySelector('#-qualquer > div.card-detals.obra-qualquer > input[type=number]:nth-child(6)').value = 0;document.querySelector('#input-comentario').value = '';mudarStar(0)"></div>
                     <div class="card-detals obra-qualquer">
                         <img style="border: 0; height: 185px; object-fit: cover;" src="" alt="">
                         <h5 style="margin-top: 13px;"></h5>
@@ -58,7 +58,7 @@
                         <h5 style="font-size: 18px;margin-top: 20px;">Comentar algo</h5>
                         <input id="input-comentario" type="text">
                         <div id="botoes">
-                            <input class="btn" type="button" value="Adicionar">
+                            <input class="btn" type="button" value="Adicionar" onclick="adicionarTrue(this.getAttribute('data-id'), this.getAttribute('data-tipoobra'))">
                             <input onclick="desaparecerDetals('-qualquer');document.querySelector('#-qualquer > div.card-detals.obra-qualquer > input[type=number]:nth-child(6)').value = 0;document.querySelector('#input-comentario').value = '';mudarStar(0)" class="btn" type="button" value="Cancelar">
                         </div>
                     </div>

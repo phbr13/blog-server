@@ -10,6 +10,10 @@ const porta = 1313;
 const path = require('path');
 const fs = require('fs').promises;
 
+//coisas do sqlite pra fzr funcionar o sqlite
+const sqlite3 = require('sqlite3').verbose()
+let sql
+
 // Middleware para analisar corpos JSON
 app.use(express.json());
 
@@ -54,8 +58,26 @@ app.post('/senha_adm', async (req, res) => {
   }
 });
 
+// Recebendo requisição de POST para adicionar o conteudo/obras ao seu repertório pessoal(banco de dados, refúgio da inspiração, oq vc preferir chamar:D)
+app.post('/post', async (req, res) => {
+  try {
+    if (!req.body) {
+      return res.status(400).json({ erro: 'Corpo da solicitação vazio' });
+    }
+    const dadosDoCorpo = req.body;
+    if (dadosDoCorpo.obra.senha == senhaAdm) {
+      console.log(dadosDoCorpo.obra.id, dadosDoCorpo.obra.tipoObra,  dadosDoCorpo.obra.avaliacao, dadosDoCorpo.obra.comentario)
+      res.status(200).json({resposta: 'Sucesso ao inserir obra ao banco de dados!'})
+    } else {
+      res.status(200).json({resposta: 'Fracasso ao inserir obra ao banco de dados! Motivo: senha incorreta. Por acaso vc acha q vai conseguir fzr postagens sem minha permissão? Seu malandro cavajeste.'});
+    }
+  } catch (erro) {
+    console.error('Erro ao processar a solicitação:', erro);
+    res.status(500).json({ erro: 'Erro interno do servidor' });
+  }
+});
+
 // Ouvindo porta no 1313
 app.listen(porta, () => {
   console.log(`Servidor rodando na porta ${porta}`);
 });
-//oioioi
