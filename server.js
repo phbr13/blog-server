@@ -10,9 +10,20 @@ const porta = 1313;
 const path = require('path');
 const fs = require('fs').promises;
 
-//coisas do sqlite pra fzr funcionar o sqlite
+//coisas do sqlite pra fzr funcionar o sqlite, e criação das tabelas principais
 const sqlite3 = require('sqlite3').verbose()
-let sql
+const db = new sqlite3.Database("./database.sqlite", sqlite3.OPEN_READWRITE, (err) => {
+  if (err) return console.error(err.message)
+})
+db.get(`SELECT name FROM sqlite_master WHERE type='table' AND name='midia'`, (err, row) => {
+  if (err) {
+    console.error(err.message);
+  } else if (!row) {
+    const sql = 'CREATE TABLE midia(id INTERGER PRIMARY KEY,idObra,tipoObra,avaliacao,comentario)'
+    db.run(sql)
+  }
+});
+db.close()
 
 // Middleware para analisar corpos JSON
 app.use(express.json());
