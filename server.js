@@ -37,6 +37,7 @@ function insertDb(id, tipo, aval, coment, tabela) {
       if (err) return console.error(err.message)
     }
   )
+  newdb.close()
 }
 
 // Middleware para analisar corpos JSON
