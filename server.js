@@ -10,7 +10,7 @@ const porta = 1313;
 const path = require('path');
 const fs = require('fs').promises;
 
-//coisas do sqlite pra fzr funcionar o sqlite, e criação das tabelas principais
+// Coisas do sqlite pra fzr funcionar o sqlite, e criação das tabelas principais
 const sqlite3 = require('sqlite3').verbose()
 const db = new sqlite3.Database("./database.sqlite", sqlite3.OPEN_READWRITE, (err) => {
   if (err) return console.error(err.message)
@@ -19,11 +19,25 @@ db.get(`SELECT name FROM sqlite_master WHERE type='table' AND name='midia'`, (er
   if (err) {
     console.error(err.message);
   } else if (!row) {
-    const sql = 'CREATE TABLE midia(id INTERGER PRIMARY KEY,idObra,tipoObra,avaliacao,comentario)'
-    db.run(sql)
+    db.run('CREATE TABLE midia(id INTERGER PRIMARY KEY,idObra,tipoObra,avaliacao,comentario)')
   }
 });
 db.close()
+
+// Insert generico para minhas databases necessárias tlgd?
+function insertDb(id, tipo, aval, coment, tabela) {
+  const newdb = new sqlite3.Database("./database.sqlite", sqlite3.OPEN_READWRITE, (err) => {
+    if (err) return console.error(err.message)
+  })
+  let sql = `INSERT INTO ${tabela}(idObra,tipoObra,avaliacao,comentario) VALUES (?,?,?,?)`
+  newdb.run(
+    sql,
+    [id, tipo, aval, coment],
+    (err) => {
+      if (err) return console.error(err.message)
+    }
+  )
+}
 
 // Middleware para analisar corpos JSON
 app.use(express.json());
@@ -77,10 +91,10 @@ app.post('/post', async (req, res) => {
     }
     const dadosDoCorpo = req.body;
     if (dadosDoCorpo.obra.senha == senhaAdm) {
-      console.log(dadosDoCorpo.obra.id, dadosDoCorpo.obra.tipoObra,  dadosDoCorpo.obra.avaliacao, dadosDoCorpo.obra.comentario)
-      res.status(200).json({resposta: 'Sucesso ao inserir obra ao banco de dados!'})
+      insertDb(dadosDoCorpo.obra.id, dadosDoCorpo.obra.tipoObra,  dadosDoCorpo.obra.avaliacao, dadosDoCorpo.obra.comentario, 'midia')
+      res.status(200).json({resposta: 'Sucesso ao inserir obra ao banco de dados!', deuruim: false})
     } else {
-      res.status(200).json({resposta: 'Fracasso ao inserir obra ao banco de dados! Motivo: senha incorreta. Por acaso vc acha q vai conseguir fzr postagens sem minha permissão? Seu malandro cavajeste.'});
+      res.status(200).json({resposta: 'Fracasso ao inserir obra ao banco de dados! Motivo: senha incorreta. Por acaso vc acha q vai conseguir fzr postagens sem minha permissão? Seu malandro cavajeste.', deuruim: true});
     }
   } catch (erro) {
     console.error('Erro ao processar a solicitação:', erro);
