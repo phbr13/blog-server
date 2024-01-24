@@ -19,25 +19,44 @@ db.get(`SELECT name FROM sqlite_master WHERE type='table' AND name='midia'`, (er
   if (err) {
     console.error(err.message);
   } else if (!row) {
-    db.run('CREATE TABLE midia(id INTERGER PRIMARY KEY,idObra,tipoObra,avaliacao,comentario)')
+    db.run('CREATE TABLE midia(id INTEGER PRIMARY KEY,Obra,idObra,tipoObra,avaliacao,comentario)')
   }
 });
 db.close()
 
 // Insert generico para minhas databases necessárias tlgd?
-function insertDb(id, tipo, aval, coment, tabela) {
+function insertDb(obra, id, tipo, aval, coment, tabela) {
   const newdb = new sqlite3.Database("./database.sqlite", sqlite3.OPEN_READWRITE, (err) => {
     if (err) return console.error(err.message)
   })
-  let sql = `INSERT INTO ${tabela}(idObra,tipoObra,avaliacao,comentario) VALUES (?,?,?,?)`
+  let sql = `INSERT INTO ${tabela}(Obra,idObra,tipoObra,avaliacao,comentario) VALUES (?,?,?,?,?)`
   newdb.run(
     sql,
-    [id, tipo, aval, coment],
+    [obra, id, tipo, aval, coment],
     (err) => {
       if (err) return console.error(err.message)
     }
   )
   newdb.close()
+}
+
+// Pegar todos os dados de uma tabela
+async function getDb(tabela) {
+  return new Promise((resolve, reject) => {
+    const newdb = new sqlite3.Database("./database.sqlite", sqlite3.OPEN_READWRITE, (err) => {
+      if (err) return console.error(err.message)
+    })
+    newdb.all(`SELECT * FROM ${tabela}`, [], (err, rows) => {
+      if (err) return console.error(err.message)
+      let content = [] 
+      rows.forEach(row => {
+        content.push(row)
+      })
+      if (err) reject(err);
+      resolve(content)
+    })
+    newdb.close()
+  });
 }
 
 // Middleware para analisar corpos JSON
@@ -92,7 +111,7 @@ app.post('/post', async (req, res) => {
     }
     const dadosDoCorpo = req.body;
     if (dadosDoCorpo.obra.senha == senhaAdm) {
-      insertDb(dadosDoCorpo.obra.id, dadosDoCorpo.obra.tipoObra,  dadosDoCorpo.obra.avaliacao, dadosDoCorpo.obra.comentario, 'midia')
+      insertDb(dadosDoCorpo.obra.nome ,dadosDoCorpo.obra.id, dadosDoCorpo.obra.tipoObra,  dadosDoCorpo.obra.avaliacao, dadosDoCorpo.obra.comentario, 'midia')
       res.status(200).json({resposta: 'Sucesso ao inserir obra ao banco de dados!', deuruim: false})
     } else {
       res.status(200).json({resposta: 'Fracasso ao inserir obra ao banco de dados! Motivo: senha incorreta. Por acaso vc acha q vai conseguir fzr postagens sem minha permissão? Seu malandro cavajeste.', deuruim: true});
@@ -102,6 +121,17 @@ app.post('/post', async (req, res) => {
     res.status(500).json({ erro: 'Erro interno do servidor' });
   }
 });
+
+// Recebendo requisição GET para enviar filmes e series da alcacova audiovisual
+app.get('/getFilmes', async (req, res) => {
+  try {
+    const filmeSeries = await getDb('midia')
+    res.status(200).json({resposta: filmeSeries})
+  } catch(erro) {
+    console.error('Erro ao processar a solicitação:', erro);
+    res.status(500).json({ erro: 'Erro interno do servidor' });
+  }
+})
 
 // Ouvindo porta no 1313
 app.listen(porta, () => {
