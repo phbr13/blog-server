@@ -22,6 +22,7 @@ db.get(`SELECT name FROM sqlite_master WHERE type='table' AND name='midia'`, (er
     db.run('CREATE TABLE midia(id INTEGER PRIMARY KEY,Obra,idObra,tipoObra,avaliacao,comentario)')
   }
 });
+// db.run('DROP TABLE midia') resolver essa paradaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 db.close()
 
 // Insert generico para minhas databases necessárias tlgd?
