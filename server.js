@@ -45,7 +45,7 @@ async function getDb(tabela) {
   const newdb = new sqlite3.Database("./database.sqlite", sqlite3.OPEN_READWRITE, (err) => {
     if (err) return console.error(err.message)
   })
-  const prfvdacerto = new Promise((resolve, reject) => {
+  const prfvdacerto = await new Promise((resolve, reject) => {
     newdb.all(`SELECT * FROM ${tabela}`, [], (err, rows) => {
       if (err) return console.error(err.message)
       let content = [] 
