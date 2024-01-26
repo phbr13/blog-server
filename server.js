@@ -22,7 +22,6 @@ db.get(`SELECT name FROM sqlite_master WHERE type='table' AND name='midia'`, (er
     db.run('CREATE TABLE midia(id INTEGER PRIMARY KEY,Obra,idObra,tipoObra,avaliacao,comentario)')
   }
 });
-// db.run('DROP TABLE midia') resolver essa paradaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 db.close()
 
 // Insert generico para minhas databases necessárias tlgd?
@@ -43,10 +42,10 @@ function insertDb(obra, id, tipo, aval, coment, tabela) {
 
 // Pegar todos os dados de uma tabela
 async function getDb(tabela) {
-  return new Promise((resolve, reject) => {
-    const newdb = new sqlite3.Database("./database.sqlite", sqlite3.OPEN_READWRITE, (err) => {
-      if (err) return console.error(err.message)
-    })
+  const newdb = new sqlite3.Database("./database.sqlite", sqlite3.OPEN_READWRITE, (err) => {
+    if (err) return console.error(err.message)
+  })
+  const prfvdacerto = new Promise((resolve, reject) => {
     newdb.all(`SELECT * FROM ${tabela}`, [], (err, rows) => {
       if (err) return console.error(err.message)
       let content = [] 
@@ -56,8 +55,9 @@ async function getDb(tabela) {
       if (err) reject(err);
       resolve(content)
     })
-    newdb.close()
-  });
+  })
+  newdb.close()
+  return prfvdacerto
 }
 
 // Middleware para analisar corpos JSON
