@@ -22,9 +22,6 @@ db.get(`SELECT name FROM sqlite_master WHERE type='table' AND name='midia'`, (er
     db.run('CREATE TABLE midia(id INTEGER PRIMARY KEY,Obra,idObra,tipoObra,avaliacao,comentario)')
   }
 });
-// db.run('DELETE FROM midia WHERE id=?', [3], (err) => {
-//   if (err) return console.error(err.message)
-// })
 db.close()
 
 // Insert generico para minhas databases necessárias tlgd?
