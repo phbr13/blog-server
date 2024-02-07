@@ -15,7 +15,7 @@ const sqlite3 = require('sqlite3').verbose()
 const db = new sqlite3.Database("./database.sqlite", sqlite3.OPEN_READWRITE, (err) => {
   if (err) return console.error(err.message)
 })
-// db.run('DROP TABLE midia')
+// db.run('DROP TABLE midia') 
 db.get(`SELECT name FROM sqlite_master WHERE type='table' AND name='midia'`, (err, row) => {
   if (err) {
     console.error(err.message);
