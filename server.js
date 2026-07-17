@@ -124,6 +124,32 @@ app.post('/post', async (req, res) => {
   }
 });
 
+// Recebendo requisição GET para pesquisar filmes/séries na API do TMDB
+// (o token fica só aqui no servidor, nunca é exposto para o navegador do usuário)
+app.get('/api/tmdb/search/:tipo', async (req, res) => {
+  try {
+    const { tipo } = req.params; // 'movie' ou 'tv'
+    const { query } = req.query;
+    if (!query) {
+      return res.status(400).json({ erro: 'Parâmetro "query" é obrigatório' });
+    }
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${process.env.TMDB_TOKEN}`
+      }
+    };
+    const url = `https://api.themoviedb.org/3/search/${tipo}?query=${encodeURIComponent(query)}&include_adult=false&language=pt-BR&page=1`;
+    const respostaTmdb = await fetch(url, options);
+    const dados = await respostaTmdb.json();
+    res.status(respostaTmdb.status).json(dados);
+  } catch (erro) {
+    console.error('Erro ao processar a solicitação:', erro);
+    res.status(500).json({ erro: 'Erro interno do servidor' });
+  }
+});
+
 // Recebendo requisição GET para enviar filmes e series da alcacova audiovisual
 app.get('/getFilmes', async (req, res) => {
   try {
